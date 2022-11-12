@@ -52,9 +52,23 @@ int main() {
 	
 	printf("Waiting for a client to connect...\n");
 	client_addr_len = sizeof(client_addr);
-	
-	accept(server_fd, (struct sockaddr *) &client_addr, &client_addr_len);
+
+	//Restore the connection file description id.
+	int connection_fd=accept(server_fd, (struct sockaddr *) &client_addr, &client_addr_len);
+	if(connection_fd==-1){
+		printf("Accept connection failed:%s \n",strerror(errno));
+	}
+
 	printf("Client connected\n");
+
+	//Read write buffer.
+	char buffer[256];
+
+	//Wait for the request.
+	while (read(connection_fd,buffer,sizeof(buffer)-1)<0);
+	printf("Received message:\n\"%s\" \n",buffer);
+	//Write response.
+	write(connection_fd,"+PONG\r\n",sizeof("+PONG\r\n")-1);
 	
 	close(server_fd);
 
