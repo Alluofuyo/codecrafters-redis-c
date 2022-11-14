@@ -64,11 +64,14 @@ int main() {
 	//Read write buffer.
 	char buffer[256];
 
+	while (1)
+	{
+		while (read(connection_fd,buffer,sizeof(buffer)-1)<0);
+		printf("Received message:\n\"%s\" \n",buffer);
+		write(connection_fd,"+PONG\r\n",sizeof("+PONG\r\n")-1);
+	}
 	//Wait for the request.
-	while (read(connection_fd,buffer,sizeof(buffer)-1)<0);
-	printf("Received message:\n\"%s\" \n",buffer);
 	//Write response.
-	write(connection_fd,"+PONG\r\n",sizeof("+PONG\r\n")-1);
 	
 	close(server_fd);
 
